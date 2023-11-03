@@ -14,7 +14,7 @@ void setup()
 	digitalWrite(LED_BUILTIN, LOW);
 	WiFi.begin(SSID, Password);
 	Serial.begin(115200);
-	while (WiFi.status() != WL_CONNECTED)
+	while (WiFi.status() != WL_CONNECTED )
 	{
 		Serial.println(WiFi.status());
 		delay(100);
@@ -24,5 +24,5 @@ void setup()
 	control = new ServerControl();;
 }
 void loop(){
-	control->getServer()->handleClient();
+	control->handleClient();
 }

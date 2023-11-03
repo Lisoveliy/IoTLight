@@ -8,28 +8,30 @@ public:
 	{
 		server = new ESP8266WebServer(80);
 		Serial.println("Server created");
-		server->on("/on", [this]() {this->onLight();});
-		server->on("/off", [this]() {this->offLight();});
+		server->on("/on", [this] {onLight();});
+		server->on("/off", [this] {offLight();});
 		server->begin();
 	}
-	ESP8266WebServer *getServer()
-	{
-		return server;
+	void handleClient(){
+		server->handleClient();
 	}
 
 private:
+	unsigned short i = 0;
 	ESP8266WebServer *server;
 	void onLight()
 	{
 		Serial.println("ON");
 		digitalWrite(LED_BUILTIN, LOW);
-		this->getServer()->send(200, "text/plain", "DONE");
+		server->send(200, "text/plain", String(i));	
+		i++;
 	}
 
 	void offLight()
 	{
 		Serial.println("OFF");
 		digitalWrite(LED_BUILTIN, HIGH);
-		this->getServer()->send(200, "text/plain", "DONE");
+		server->send(200, "text/plain", String(i));
+		i++;
 	}
 };
