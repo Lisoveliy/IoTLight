@@ -43,7 +43,7 @@ private:
 
 	void callback(char *topic, byte *payload, unsigned int length) {
 		String data = "";
-		for(int i = 0; i < length; i++){
+		for(unsigned int i = 0; i < length; i++){
 		 	data+=(char)payload[i];
 		}
 		Serial.print("Recieved on topic");
