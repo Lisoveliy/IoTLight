@@ -28,7 +28,8 @@ private:
 	{
 		client.setServer(ServiceData::Mqtt::Server.c_str(), ServiceData::Mqtt::Port);
 		client.setClient(wclient);
-		client.setCallback([this](char *topic, byte* payload, unsigned int length) {callback(topic, payload, length);});
+		client.setCallback([this](char *topic, byte *payload, unsigned int length)
+						   { callback(topic, payload, length); });
 		while (!client.connected())
 		{
 			// Attempt to connect
@@ -41,22 +42,36 @@ private:
 		client.subscribe(ServiceData::Commands::Branch.c_str(), 0);
 	}
 
-	void callback(char *topic, byte *payload, unsigned int length) {
+	void callback(char *topic, byte *payload, unsigned int length)
+	{
 		String data = "";
-		for(unsigned int i = 0; i < length; i++){
-		 	data+=(char)payload[i];
+		for (unsigned int i = 0; i < length; i++)
+		{
+			data += (char)payload[i];
 		}
 		Serial.print("Recieved on topic");
 		Serial.print(topic);
 		Serial.print(": ");
 		Serial.println(data);
-		if(data == "ON"){
-		 	onLight();
+		if (data == ServiceData::Commands::On)
+		{
+			onLight();
 		}
-		if(data == "OFF"){
+		if (data == ServiceData::Commands::Off)
+		{
 			offLight();
 		}
 	}
+	
+	void sendData(String branch, String data)
+	{
+		Serial.print("Send data to ");
+		Serial.print(ServiceData::Mqtt::Branch);
+		Serial.print(": ");
+		Serial.println(data);
+		client.publish(branch.c_str(), data.c_str());
+	}
+
 	void onLight()
 	{
 		digitalWrite(D0, HIGH);
@@ -67,12 +82,5 @@ private:
 	{
 		digitalWrite(D0, LOW);
 		sendData(ServiceData::Mqtt::Branch, "OFF");
-	}
-	void sendData(String branch, String data){
-		Serial.print("Send data to ");
-		Serial.print(ServiceData::Mqtt::Branch);
-		Serial.print(": ");
-		Serial.println(data);
-		client.publish(branch.c_str(), data.c_str());	
 	}
 };
