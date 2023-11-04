@@ -8,32 +8,71 @@ class ServerControl
 public:
 	ServerControl()
 	{
-		server = new ESP8266WebServer(80);
-		Serial.println("Server created");
-		server->on("/on", [this] {onLight();});
-		server->on("/off", [this] {offLight();});
-		server->begin();
+		connect();
 	}
-	void handleClient(){
-		server->handleClient();
+	void handleClient()
+	{
+		client.loop();
+		if (!client.connected())
+		{
+			connect();
+		}
 	}
 
 private:
-	unsigned short i = 0;
+	WiFiClient wclient;
+	PubSubClient client;
 	ESP8266WebServer *server;
+
+	void connect()
+	{
+		client.setServer(ServiceData::Mqtt::Server.c_str(), ServiceData::Mqtt::Port);
+		client.setClient(wclient);
+		client.setCallback([this](char *topic, byte* payload, unsigned int length) {callback(topic, payload, length);});
+		while (!client.connected())
+		{
+			// Attempt to connect
+			Serial.println("Attempt to connect to MQTT broker");
+			client.connect("ESP8266LIGHT_57876987", ServiceData::Mqtt::User.c_str(), ServiceData::Mqtt::Password.c_str());
+			// Wait some time to space out connection requests
+			delay(3000);
+		}
+		Serial.println("MQTT Connected!");
+		client.subscribe(ServiceData::Commands::Branch.c_str(), 0);
+	}
+
+	void callback(char *topic, byte *payload, unsigned int length) {
+		String data = "";
+		for(int i = 0; i < length; i++){
+		 	data+=(char)payload[i];
+		}
+		Serial.print("Recieved on topic");
+		Serial.print(topic);
+		Serial.print(": ");
+		Serial.println(data);
+		if(data == "ON"){
+		 	onLight();
+		}
+		if(data == "OFF"){
+			offLight();
+		}
+	}
 	void onLight()
 	{
-		Serial.println("ON");
 		digitalWrite(D0, HIGH);
-		server->send(200, "text/plain", String(i));	
-		i++;
+		sendData(ServiceData::Mqtt::Branch, "ON");
 	}
 
 	void offLight()
 	{
-		Serial.println("OFF");
 		digitalWrite(D0, LOW);
-		server->send(200, "text/plain", String(i));
-		i++;
+		sendData(ServiceData::Mqtt::Branch, "OFF");
+	}
+	void sendData(String branch, String data){
+		Serial.print("Send data to ");
+		Serial.print(ServiceData::Mqtt::Branch);
+		Serial.print(": ");
+		Serial.println(data);
+		client.publish(branch.c_str(), data.c_str());	
 	}
 };
