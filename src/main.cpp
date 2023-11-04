@@ -9,8 +9,8 @@ ServerControl* control;
 void setup()
 {
 	pinMode(LED_BUILTIN, OUTPUT);
-	pinMode(D1, OUTPUT);
-	digitalWrite(D1, LOW);
+	pinMode(D0, OUTPUT);
+	digitalWrite(D0, LOW);
 	digitalWrite(LED_BUILTIN, LOW);
 	WiFi.begin(SSID, Password);
 	Serial.begin(115200);

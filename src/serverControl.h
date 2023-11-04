@@ -22,7 +22,7 @@ private:
 	void onLight()
 	{
 		Serial.println("ON");
-		digitalWrite(LED_BUILTIN, LOW);
+		digitalWrite(D0, HIGH);
 		server->send(200, "text/plain", String(i));	
 		i++;
 	}
@@ -30,7 +30,7 @@ private:
 	void offLight()
 	{
 		Serial.println("OFF");
-		digitalWrite(LED_BUILTIN, HIGH);
+		digitalWrite(D0, LOW);
 		server->send(200, "text/plain", String(i));
 		i++;
 	}
