@@ -1,21 +1,27 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include <serverControl.h>
-
-namespace ServiceData
-{
-	const String SSID = "IoT-1986";
-	const String Password = "IoTPassword228";
-	namespace Mqtt{
-		const String Server = "mosquitto";
-		const short Port = 1883;
-		const String User = "esp8266dev";
-		const String Password = "iotpassword228"; 
-	}
-};
+#include <serviceData.h>
+#include "serverControl.cpp"
 
 ServerControl *control;
+
+void setupServices(){
+	while (WiFi.status() != WL_CONNECTED)
+	{
+		Serial.println(WiFi.status());
+		delay(100);
+	}
+
+	Serial.print("Connected to "); Serial.println(ServiceData::SSID);
+	digitalWrite(LED_BUILTIN, HIGH);
+	delay(200);
+	digitalWrite(LED_BUILTIN, LOW);
+	delay(200);
+	digitalWrite(LED_BUILTIN, HIGH);
+	
+	control = new ServerControl();
+}
+
 void setup()
 {
 	pinMode(LED_BUILTIN, OUTPUT);
@@ -24,16 +30,9 @@ void setup()
 	digitalWrite(LED_BUILTIN, LOW);
 	WiFi.begin(ServiceData::SSID, ServiceData::Password);
 	Serial.begin(115200);
-	while (WiFi.status() != WL_CONNECTED)
-	{
-		Serial.println(WiFi.status());
-		delay(100);
-	}
-	Serial.println("Connected");
-	digitalWrite(LED_BUILTIN, HIGH);
-	control = new ServerControl();
-	;
+	setupServices();
 }
+
 void loop()
 {
 	control->handleClient();
