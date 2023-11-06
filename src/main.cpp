@@ -7,6 +7,7 @@ ServerControl *control;
 
 void connectToAP()
 {
+	digitalWrite(LED_BUILTIN, LOW);
 	while (WiFi.status() != WL_CONNECTED)
 	{
 		Serial.println(WiFi.status());
@@ -15,19 +16,17 @@ void connectToAP()
 
 	Serial.print("Connected to ");
 	Serial.println(ServiceData::SSID);
+	digitalWrite(LED_BUILTIN, HIGH);
 }
 void setupServices()
 {
 	connectToAP();
-	digitalWrite(LED_BUILTIN, HIGH);
 	delay(200);
 	digitalWrite(LED_BUILTIN, LOW);
 	delay(200);
 	digitalWrite(LED_BUILTIN, HIGH);
 	delay(200);
-	digitalWrite(LED_BUILTIN, LOW);
 	control = new ServerControl();
-	digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void setup()
@@ -35,7 +34,6 @@ void setup()
 	pinMode(LED_BUILTIN, OUTPUT);
 	pinMode(D0, OUTPUT);
 	digitalWrite(D0, LOW);
-	digitalWrite(LED_BUILTIN, LOW);
 	WiFi.begin(ServiceData::SSID, ServiceData::Password);
 	Serial.begin(115200);
 	setupServices();

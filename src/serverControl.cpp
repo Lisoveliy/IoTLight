@@ -26,6 +26,7 @@ private:
 
 	void connect()
 	{
+		digitalWrite(LED_BUILTIN, LOW);
 		client.setServer(ServiceData::Mqtt::Server.c_str(), ServiceData::Mqtt::Port);
 		client.setClient(wclient);
 		client.setCallback([this](char *topic, byte *payload, unsigned int length)
@@ -39,6 +40,7 @@ private:
 			delay(3000);
 		}
 		Serial.println("MQTT Connected!");
+		digitalWrite(LED_BUILTIN, HIGH);
 		client.subscribe(ServiceData::Commands::Branch.c_str(), 0);
 	}
 
