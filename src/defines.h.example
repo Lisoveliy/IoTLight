@@ -1,0 +1,3 @@
+#define MQTTPass "12345678"
+#define WiFiPass "12345678"
+#define ServerIP "192.168.0.100"
