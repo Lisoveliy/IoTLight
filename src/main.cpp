@@ -43,8 +43,8 @@ void setup()
 
 void loop()
 {
-	control->handleClient();
 	if(WiFi.status() != WL_CONNECTED){
 		connectToAP();
 	}
+	control->handleClient();
 }
