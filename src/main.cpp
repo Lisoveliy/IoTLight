@@ -8,16 +8,19 @@ ServerControl *control;
 void connectToAP()
 {
 	digitalWrite(LED_BUILTIN, LOW);
+	digitalWrite(D0, HIGH);
 	while (WiFi.status() != WL_CONNECTED)
 	{
 		Serial.println(WiFi.status());
 		delay(100);
 	}
+	digitalWrite(D0, LOW);
 
 	Serial.print("Connected to ");
 	Serial.println(ServiceData::SSID);
 	digitalWrite(LED_BUILTIN, HIGH);
 }
+
 void setupServices()
 {
 	connectToAP();
@@ -41,7 +44,8 @@ void setup()
 
 void loop()
 {
-	if(WiFi.status() != WL_CONNECTED){
+	if (WiFi.status() != WL_CONNECTED)
+	{
 		connectToAP();
 	}
 	control->handleClient();
