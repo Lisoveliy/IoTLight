@@ -9,15 +9,22 @@ void connectToAP()
 {
 	digitalWrite(LED_BUILTIN, LOW);
 	digitalWrite(D0, HIGH);
+	Serial.print("Connecting to \"");
+	Serial.print(ServiceData::SSID);
+	Serial.print("\"");
 	while (WiFi.status() != WL_CONNECTED)
 	{
-		Serial.println(WiFi.status());
+		Serial.print(".");
 		delay(100);
 	}
 	digitalWrite(D0, LOW);
+	Serial.println();
 
-	Serial.print("Connected to ");
-	Serial.println(ServiceData::SSID);
+	Serial.print("Connected to \"");
+	Serial.print(ServiceData::SSID);
+	Serial.print("\"");
+	Serial.println();
+
 	digitalWrite(LED_BUILTIN, HIGH);
 }
 

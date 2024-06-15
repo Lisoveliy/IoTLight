@@ -34,7 +34,7 @@ private:
 		while (!client.connected())
 		{
 			// Attempt to connect
-			Serial.println("Attempt to connect to MQTT broker");
+			Serial.println("Attempt to connect to MQTT broker...");
 			client.connect("ESP8266LIGHT_57876987", ServiceData::Mqtt::User.c_str(), ServiceData::Mqtt::Password.c_str());
 			// Wait some time to space out connection requests
 			delay(3000);
